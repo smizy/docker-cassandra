@@ -6,13 +6,10 @@ if [ "${1:0:1}" = '-' ]; then
 	set -- cassandra -f "$@"
 fi
 
-# allow the container to be started with `--user`
-if [ "$1" = 'cassandra' -a "$(id -u)" = '0' ]; then
-	chown -R cassandra /var/lib/cassandra "$CASSANDRA_CONFIG"
-	exec su-exec cassandra "$BASH_SOURCE" "$@"
-fi
-
 if [ "$1" = 'cassandra' ]; then
+	mkdir -p "${CASSANDRA_DATA}" "${CASSANDRA_LOGS}"
+	chmod 700 "${CASSANDRA_DATA}" "${CASSANDRA_LOGS}"
+	chown -R cassandra "${CASSANDRA_DATA}" "${CASSANDRA_LOGS}"
 
 	: ${CASSANDRA_RPC_ADDRESS='0.0.0.0'}
 
@@ -33,6 +30,8 @@ if [ "$1" = 'cassandra' ]; then
 	fi
 	: ${CASSANDRA_SEEDS:="$CASSANDRA_BROADCAST_ADDRESS"}
 	
+	sed -ri 's/(- seeds:).*/\1 "'"$CASSANDRA_SEEDS"'"/' "$CASSANDRA_CONF/cassandra.yaml"
+
 	for yaml in \
 		broadcast_address \
 		broadcast_rpc_address \
@@ -42,11 +41,15 @@ if [ "$1" = 'cassandra' ]; then
 		num_tokens \
 		rpc_address \
 		start_rpc \
+		data_file_directories \
+		commitlog_directory \
+		cdc_raw_directory \
+		saved_caches_directory \
 	; do
 		var="CASSANDRA_${yaml^^}"
 		val="${!var}"
 		if [ "$val" ]; then
-			sed -ri 's/^(# )?('"$yaml"':).*/\2 '"$val"'/' "$CASSANDRA_CONFIG/cassandra.yaml"
+			sed -ri 's@^(# )?('"$yaml"':).*@\2 '"$val"'@' "$CASSANDRA_CONF/cassandra.yaml"
 		fi
 	done
 
@@ -54,9 +57,11 @@ if [ "$1" = 'cassandra' ]; then
 		var="CASSANDRA_${rackdc^^}"
 		val="${!var}"
 		if [ "$val" ]; then
-			sed -ri 's/^('"$rackdc"'=).*/\1 '"$val"'/' "$CASSANDRA_CONFIG/cassandra-rackdc.properties"
+			sed -ri 's/^('"$rackdc"'=).*/\1 '"$val"'/' "$CASSANDRA_CONF/cassandra-rackdc.properties"
 		fi
 	done
+
+	exec su-exec cassandra "$@"
 fi
 
 exec "$@"
