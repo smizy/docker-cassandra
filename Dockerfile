@@ -37,7 +37,7 @@ RUN set -x \
     ) \    
     && wget -q -O - ${mirror_url}/${CASSANDRA_VERSION}/apache-cassandra-${CASSANDRA_VERSION}-bin.tar.gz \
         | tar -xzf - -C /usr/local \
-    ## comment out directory setting
+    ## uncomment out directory setting
     && sed -ri.bk 's/^# ([^ ]+directory:)/\1/g' ${CASSANDRA_CONFIG}/cassandra.yaml \
     && sed -ri.bk '/^# data_file_directories/,/^$/ s/^# //g' ${CASSANDRA_CONFIG}/cassandra.yaml \
     ## user/dir/permmsion
