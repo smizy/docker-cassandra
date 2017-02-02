@@ -26,10 +26,10 @@ dependencies:
     - docker info
     - docker version
     - docker build 
-	    --build-arg BUILD_DATE=${BUILD_DATE} 
-	    --build-arg VCS_REF=${VCS_REF} 
-	    --build-arg VERSION=${VERSION} 
-		  --rm -t smizy/cassandra:${TAG} .
+      --build-arg BUILD_DATE=${BUILD_DATE}
+      --build-arg VCS_REF=${VCS_REF}
+      --build-arg VERSION=${VERSION}
+      --rm -t smizy/cassandra:${TAG}.
     - docker images | grep cassandra
     - docker run -
 
