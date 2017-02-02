@@ -1,0 +1,23 @@
+.PHONY: all
+all: runtime
+
+.PHONY: clean
+clean:
+	docker rmi -f smizy/cassandra:${TAG} || :
+
+.PHONY: runtime
+runtime:
+	docker build \
+		--build-arg BUILD_DATE=${BUILD_DATE} \
+		--build-arg VCS_REF=${VCS_REF} \
+		--build-arg VERSION=${VERSION} \
+		-t smizy/cassandra:${TAG} . 
+	docker images | grep cassandra
+
+.PHONY: test
+test:
+	(docker network ls | grep vnet ) || docker network create vnet
+	docker run --net vnet --name cassandra -d  smizy/cassandra:${TAG}
+	docker run --net vnet smizy/cassandra:${TAG}  bash -c 'for i in $$(seq 200); do nc -z cassandra.vnet 9042 && echo test starting && break; echo -n .; sleep 1; [ $$i -ge 200 ] && echo timeout && exit 124; done'  
+	
+	bats test/test_*.bats
