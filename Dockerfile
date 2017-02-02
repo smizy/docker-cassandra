@@ -8,7 +8,7 @@ LABEL \
     org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.docker.dockerfile="/Dockerfile" \
     org.label-schema.license="Apache License 2.0" \
-    org.label-schema.name="smizy/hbase" \
+    org.label-schema.name="smizy/cassandra" \
     org.label-schema.url="https://github.com/smizy" \
     org.label-schema.vcs-ref=$VCS_REF \
     org.label-schema.vcs-type="Git" \
@@ -26,11 +26,6 @@ ENV CASSANDRA_DATA_FILE_DIRECTORIES   ["${CASSANDRA_DATA}/data"]
 ENV CASSANDRA_COMMITLOG_DIRECTORY     ${CASSANDRA_DATA}/commitlog
 ENV CASSANDRA_SAVED_CACHES_DIRECTORY  ${CASSANDRA_DATA}/saved_caches
 ENV CASSANDRA_HINTS_DIRECTORY         ${CASSANDRA_DATA}/hints
-
-# Segmentation fault
-# Problematic frame:
-# C  [libjemalloc.so.2+0x3863]  _init+0x59b
-#ENV CASSANDRA_LIBJEMALLOC             /usr/lib/libjemalloc.so.2
 
 ENV JAVA_HOME  /usr/lib/jvm/default-jvm
 ENV PATH       $PATH:${JAVA_HOME}/bin:${CASSANDRA_HOME}/bin

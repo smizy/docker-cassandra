@@ -1,0 +1,60 @@
+
+# https://circleci.com/docs/docker
+machine:
+  environment:
+    VERSION: 3.9
+    BUILD_DATE: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    VCS_REF: ${CIRCLE_SHA1:0:7}
+    TAG: ${VERSION}-alpine
+    TAG_MINOR: ${VERSION%.*}-alpine
+    TAG_MAJOR: ${VERSION%%.*}-alpine
+    BATS_VER: 0.4.0
+  services: 
+    - docker
+  pre:
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+
+dependencies:
+  cache_directories:
+    - "~/deps"
+  pre:
+    - if [[ ! -e ~/deps/bats_v${BATS_VER}.tar.gz ]]; then mkdir -p ~/deps; curl -sSL -o ~/deps/bats_v${BATS_VER}.tar.gz https://github.com/sstephenson/bats/archive/v${BATS_VER}.tar.gz; fi
+    - tar -xf ~/deps/bats_v${BATS_VER}.tar.gz
+    - sudo bats-${BATS_VER}/install.sh /usr/local
+#    - sudo pip install docker-compose
+  override:
+    - docker info
+    - docker version
+    - docker build 
+	    --build-arg BUILD_DATE=${BUILD_DATE} 
+	    --build-arg VCS_REF=${VCS_REF} 
+	    --build-arg VERSION=${VERSION} 
+		  --rm -t smizy/cassandra:${TAG} .
+    - docker images | grep cassandra
+    - docker run -
+
+test:
+  override:
+    - docker inspect smizy/cassandra:${TAG}
+    - (docker network ls | grep vnet ) || docker network create vnet
+    - docker run --net vnet --name cassandra -d  smizy/cassandra:${TAG}
+    - docker run --net vnet smizy/cassandra:${TAG}  bash -c 'for i in $$(seq 200); do nc -z cassandra.vnet 9042 && echo test starting && break; echo -n .; sleep 1; [ $$i -ge 200 ] && echo timeout && exit 124  
+    - bats test/test_*.bats
+
+# https://circleci.com/docs/configuration#deployment
+# https://circleci.com/docs/environment-variables
+deployment:
+  master:
+    branch: master
+    owner: smizy
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker tag smizy/cassandra:${TAG} smizy/cassandra
+      - docker tag smizy/cassandra:${TAG} smizy/cassandra:${TAG_MINOR}
+ #     - docker tag smizy/cassandra:${TAG} smizy/cassandra:${TAG_MAJOR}
+      - docker push smizy/cassandra:${TAG}
+      - docker push smizy/cassandra:${TAG_MINOR}
+ #     - docker push smizy/cassandra:${TAG_MAJOR}
+      - docker push smizy/cassandra:latest
+      - docker logout
+      - curl -X POST 'https://hooks.microbadger.com/images/smizy/cassandra/s_qvVZ-b6_ekmAK6NqPAapc3Ls8='
