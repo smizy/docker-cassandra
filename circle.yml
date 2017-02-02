@@ -31,7 +31,6 @@ dependencies:
       --build-arg VERSION=${VERSION}
       --rm -t smizy/cassandra:${TAG} .
     - docker images | grep cassandra
-    - docker run -
 
 test:
   override:
