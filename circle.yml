@@ -37,7 +37,7 @@ test:
     - docker inspect smizy/cassandra:${TAG}
     - (docker network ls | grep vnet ) || docker network create vnet
     - docker run --net vnet --name cassandra -d  smizy/cassandra:${TAG}
-    - docker run --net vnet smizy/cassandra:${TAG}  bash -c 'for i in $$(seq 200); do nc -z cassandra.vnet 9042 && echo test starting && break; echo -n .; sleep 1; [ $$i -ge 200 ] && echo timeout && exit 124  
+    - docker run --net vnet smizy/cassandra:${TAG}  bash -c 'for i in $$(seq 200); do nc -z cassandra.vnet 9042 && echo test starting && break; echo -n .; sleep 1; [ $$i -ge 200 ] && echo timeout && exit 124'  
     - bats test/test_*.bats
 
 # https://circleci.com/docs/configuration#deployment
