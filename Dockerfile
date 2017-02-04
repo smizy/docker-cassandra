@@ -47,7 +47,7 @@ RUN set -x \
     && wget -q -O - ${mirror_url}/${CASSANDRA_VERSION}/apache-cassandra-${CASSANDRA_VERSION}-bin.tar.gz \
         | tar -xzf - -C /usr/local \
     ## use ${CASSANDRA_LOGS} directory for gc.log
-    && sed -iE 's#-Xloggc:[^/]*/logs#-Xloggc:${CASSANDRA_LOGS}#g' ${CASSANDRA_CONF}/cassandra.yaml \
+    && sed -ri 's#-Xloggc:[^/]*/logs#-Xloggc:${CASSANDRA_LOGS}#g' ${CASSANDRA_CONF}/cassandra.yaml \
     ## user/dir/permmsion
     && adduser -D  -g '' -s /sbin/nologin -u 1000 docker \
     && adduser -D  -g '' -s /sbin/nologin cassandra  
