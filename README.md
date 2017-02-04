@@ -7,8 +7,16 @@ Apache Cassandra docker image based on alpine
 
 Note that this image is unstable and under development.
 
+## Small setup
+
 ```
+# network 
+docker network create vnet
+
+# startup cassandra
 docker run --net vnet --name cassandra -d  smizy/cassandra:3.9-alpine 
+
+# cqlsh access
 docker run --net vnet -it --rm smizy/cassandra:3.9-alpine cqlsh cassandra.vnet
 
 Connected to Test Cluster at cassandra.vnet:9042.
