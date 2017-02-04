@@ -14,10 +14,13 @@ Note that this image is unstable and under development.
 docker network create vnet
 
 # startup cassandra
-docker run --net vnet --name cassandra -d  smizy/cassandra:3.10-alpine 
+docker run --net vnet --name cassandra -d smizy/cassandra:3.10-alpine 
+
+# tail logs
+docker logs -f cassandra
 
 # cqlsh access
-docker run --net vnet -it --rm smizy/cassandra:3.10-alpine cqlsh cassandra.vnet
+docker run -it --rm --net vnet smizy/cassandra:3.10-alpine cqlsh cassandra.vnet
 
 Connected to Test Cluster at cassandra.vnet:9042.
 [cqlsh 5.0.1 | Cassandra 3.10 | CQL spec 3.4.4 | Native protocol v4]
