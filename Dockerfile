@@ -27,11 +27,6 @@ ENV CASSANDRA_COMMITLOG_DIRECTORY     ${CASSANDRA_DATA}/commitlog
 ENV CASSANDRA_SAVED_CACHES_DIRECTORY  ${CASSANDRA_DATA}/saved_caches
 ENV CASSANDRA_HINTS_DIRECTORY         ${CASSANDRA_DATA}/hints
 
-# Segmentation fault
-# Problematic frame:
-# C  [libjemalloc.so.2+0x3863]  _init+0x59b
-#ENV CASSANDRA_LIBJEMALLOC             /usr/lib/libjemalloc.so.2
-
 ENV JAVA_HOME  /usr/lib/jvm/default-jvm
 ENV PATH       $PATH:${JAVA_HOME}/bin:${CASSANDRA_HOME}/bin
 
@@ -40,6 +35,7 @@ RUN set -x \
     && apk --no-cache add \
         bash \
         jemalloc \
+        libc6-compat \
         openjdk8-jre \
         python \
         su-exec \

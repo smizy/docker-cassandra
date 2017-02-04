@@ -11,7 +11,7 @@ runtime:
 		--build-arg BUILD_DATE=${BUILD_DATE} \
 		--build-arg VCS_REF=${VCS_REF} \
 		--build-arg VERSION=${VERSION} \
-		-t smizy/cassandra:${TAG} . 
+		--rm -t smizy/cassandra:${TAG} . 
 	docker images | grep cassandra
 
 .PHONY: test
