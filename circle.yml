@@ -48,4 +48,4 @@ deployment:
  #     - docker push smizy/cassandra:${TAG_MAJOR}
       - docker push smizy/cassandra:latest
       - docker logout
-      - curl -X POST 'https://hooks.microbadger.com/images/smizy/cassandra/s_qvVZ-b6_ekmAK6NqPAapc3Ls8='
+      - curl -X POST 'https://hooks.microbadger.com/images/smizy/cassandra/TEpvgKOx0TpLVvxWQSluedQQwpw='
