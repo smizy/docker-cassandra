@@ -45,6 +45,7 @@ if [ "$1" = 'cassandra' ]; then
 		commitlog_directory \
 		cdc_raw_directory \
 		saved_caches_directory \
+		hints_directory \
 	; do
 		var="CASSANDRA_${yaml^^}"
 		val="${!var}"
