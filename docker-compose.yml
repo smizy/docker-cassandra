@@ -5,7 +5,7 @@ services:
     container_name: cassandra-1
     networks: ["vnet"]
     hostname: cassandra-1.vnet
-    image: smizy/cassandra:3.10-alpine
+    image: smizy/cassandra:3.11-alpine
     environment:
       - CASSANDRA_START_RPC=true
       - CASSANDRA_SEEDS=cassandra-1.vnet
@@ -17,7 +17,7 @@ services:
     container_name: cassandra-2
     networks: ["vnet"]
     hostname: cassandra-2.vnet
-    image: smizy/cassandra:3.10-alpine
+    image: smizy/cassandra:3.11-alpine
     environment:
       - CASSANDRA_START_RPC=true
       - CASSANDRA_SEEDS=cassandra-1.vnet
@@ -28,7 +28,7 @@ services:
     container_name: cassandra-3
     networks: ["vnet"]
     hostname: cassandra-3.vnet
-    image: smizy/cassandra:3.10-alpine
+    image: smizy/cassandra:3.11-alpine
     environment:
       - CASSANDRA_START_RPC=true
       - CASSANDRA_SEEDS=cassandra-1.vnet
