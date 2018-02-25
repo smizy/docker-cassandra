@@ -5,34 +5,33 @@ services:
     container_name: cassandra-1
     networks: ["vnet"]
     hostname: cassandra-1.vnet
-    image: smizy/cassandra:3.11-alpine
+    image: smizy/cassandra:3.11.2-alpine
     environment:
       - CASSANDRA_START_RPC=true
-      - CASSANDRA_SEEDS=cassandra-1.vnet
-      - CASSANDRA_LISTEN_ADDRESS=cassandra-1.vnet
-      - MAX_HEAP_SIZE=1024M
+      - CASSANDRA_SEEDS=cassandra-1.vnet,cassandra-2.vnet,cassandra-3.vnet
+      - MAX_HEAP_SIZE=512M
       - HEAP_NEWSIZE=200M
 
   cassandra-2:
     container_name: cassandra-2
     networks: ["vnet"]
     hostname: cassandra-2.vnet
-    image: smizy/cassandra:3.11-alpine
+    image: smizy/cassandra:3.11.2-alpine
     environment:
       - CASSANDRA_START_RPC=true
-      - CASSANDRA_SEEDS=cassandra-1.vnet
-      - MAX_HEAP_SIZE=1024M
+      - CASSANDRA_SEEDS=cassandra-1.vnet,cassandra-2.vnet,cassandra-3.vnet
+      - MAX_HEAP_SIZE=512M
       - HEAP_NEWSIZE=200M
 
   cassandra-3:
     container_name: cassandra-3
     networks: ["vnet"]
     hostname: cassandra-3.vnet
-    image: smizy/cassandra:3.11-alpine
+    image: smizy/cassandra:3.11.2-alpine
     environment:
       - CASSANDRA_START_RPC=true
-      - CASSANDRA_SEEDS=cassandra-1.vnet
-      - MAX_HEAP_SIZE=1024M
+      - CASSANDRA_SEEDS=cassandra-1.vnet,cassandra-2.vnet,cassandra-3.vnet
+      - MAX_HEAP_SIZE=512M
       - HEAP_NEWSIZE=200M 
 
 networks:
